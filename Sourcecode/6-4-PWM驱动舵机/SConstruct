@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+import os
+from SCons.Script import DefaultEnvironment, Glob
+
+# ----------------------------
+# 环境初始化
+# ----------------------------
+env = DefaultEnvironment()
+env.Replace(
+    CC='arm-none-eabi-gcc',
+    AS='arm-none-eabi-gcc',
+    AR='arm-none-eabi-ar',
+    LINK='arm-none-eabi-gcc',
+    OBJCOPY='arm-none-eabi-objcopy',
+    OBJDUMP='arm-none-eabi-objdump',
+    SIZE='arm-none-eabi-size',
+)
+
+# ----------------------------
+# MCU & 编译选项
+# ----------------------------
+mcu_flags = [
+    '-mcpu=cortex-m3',
+    '-mthumb',
+    '-Wall',
+    '-O2',
+    '-ffunction-sections',
+    '-fdata-sections',
+]
+
+defines = [
+    'USE_STDPERIPH_DRIVER',
+    'STM32F10X_MD',
+]
+
+includes = [
+    'User',
+    'Start',
+    'Library',
+    'System',
+    'Hardware',
+]
+
+# C 编译标志
+env.Append(
+    CCFLAGS=mcu_flags + ['-D' + d for d in defines] + ['-I' + inc for inc in includes],
+    # 汇编标志
+    ASFLAGS=mcu_flags + ['-x', 'assembler-with-cpp'],
+    # 链接标志
+    LINKFLAGS=[
+        '-mcpu=cortex-m3',
+        '-mthumb',
+        '-Tstm32f103c8.ld',
+        '-Wl,--gc-sections',
+        '-Wl,-Map=firmware.map',
+        '--specs=nano.specs',
+        '--specs=nosys.specs',
+    ],
+)
+
+# ----------------------------
+# 源文件列表
+# ----------------------------
+c_sources = []
+for pattern in ['User/*.c', 'Library/*.c', 'System/*.c', 'Start/*.c','Hardware/*.c']:
+    files = Glob(pattern)
+    c_sources.extend(files)
+
+# 排除 core_cm3.c
+c_sources = [f for f in c_sources if 'core_cm3.c' not in str(f)]
+
+# 使用修复后的启动包装文件 startup_wrapper.S
+# 使用大写 .S 扩展名，这样 GCC 会自动进行预处理
+asm_sources = ['Start/startup_wrapper.S']
+
+all_sources = c_sources + asm_sources
+
+# ----------------------------
+# 构建固件
+# ----------------------------
+elf = env.Program(target='firmware.elf', source=all_sources)
+
+# 生成 bin 文件
+bin_file = env.Command('firmware.bin', elf, '$OBJCOPY -O binary $SOURCE $TARGET')
+
+# 生成 hex 文件
+hex_file = env.Command('firmware.hex', elf, '$OBJCOPY -O ihex $SOURCE $TARGET')
+
+# 输出大小信息
+env.AddPostAction(elf, '$SIZE $SOURCE')
+
+# 设置默认目标
+env.Default(elf, bin_file, hex_file)

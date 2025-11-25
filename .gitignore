@@ -1,0 +1,62 @@
+# --- Build outputs (SCons / GCC / ARM toolchain) ---
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+*.axf
+*.out
+
+# SCons database
+.sconsign.dblite
+.sconsign.dblite.old
+
+# SCons local cache folders
+.cache/
+.sconf_temp/
+
+# RT-Thread / STM32Cube auto-generated
+build/
+Debug/
+Release/
+
+# --- Keil µVision generated files ---
+# Keil workspace / GUI states
+*.uvguix*
+*.uvoptx
+
+# ARMCC intermediate output
+Listings/
+Objects/
+*.dep
+
+# Keil fast build files
+*.crf
+*.htm
+*.lnp
+*.lst
+*.scr
+
+# Templates and backup files
+*~
+*.bak
+*.swp
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python (if you use scons with python scripts)
+__pycache__/
+*.pyc
+
+# Binaries that should NOT be versioned
+firmware.elf
+firmware.bin
+firmware.hex
+firmware.map
+
+# Windows batch files (optional)
+keilkill.bat
