@@ -4,6 +4,10 @@
 
 > Add Linux complie support , enable scons by add stm32f103c8.ld，SConstruct，syscalls.c，startup_wrapper.S , no need to install keil mdk.
 
+<p align="center">
+  <img src="https://github.com/Dichgrem/STM32F103C8T6-Linux/blob/main/devices.png" width="300">
+</p>
+
 ## How to use
 
 - Setup environment
@@ -24,9 +28,21 @@ git clone https://github.com/Dichgrem/STM32F103C8T6-Linux.git
 cd STM32F103C8T6-Linux/Sourcecode
 ```
 
+- Check stlink connect
+
+```
+❯ st-info --probe
+Found 1 stlink programmers
+  version:    V2J37S7
+  serial:     37FF71064E57343603281543
+  flash:      65536 (pagesize: 1024)
+  sram:       20480
+  chipid:     0x410
+  2025-11-25T16:07:54dev-type:   STM32F1xx_MD
+```
+
 - Use scons to complie
 ```
-STM32F103C8T6-Linux/Sourcecode/3-1-LED闪烁 main
 ❯ scons
 scons: Reading SConscript files ...
 scons: done reading SConscript files.
@@ -43,6 +59,23 @@ scons: done building targets.
 ❯ ls
 firmware.bin  firmware.hex  keilkill.bat  Listings  Project.uvguix.Admin  Project.uvprojx  Start           System
 firmware.elf  firmware.map  Library       Objects   Project.uvoptx        SConstruct       stm32f103c8.ld  User
+```
+
+- Use st-flash to write
+
+```
+❯ st-flash write firmware.bin 0x08000000
+st-flash 1.8.0
+INFO common.c: STM32F1xx_MD: 20 KiB SRAM, 64 KiB flash in at least 1 KiB pages.
+file firmware.bin md5 checksum: cb4d34581a6548bd9c6ee386e94bb5, stlink checksum: 0x00015d0a
+INFO common_flash.c: Attempting to write 1152 (0x480) bytes to stm32 address: 134217728 (0x8000000)
+-> Flash page at 0x8000400 erased (size: 0x400)
+INFO flash_loader.c: Starting Flash write for VL/F0/F3/F1_XL
+INFO flash_loader.c: Successfully loaded flash loader in sram
+INFO flash_loader.c: Clear DFSR
+  2/2   pages written
+INFO common_flash.c: Starting verification of write complete
+INFO common_flash.c: Flash written and verified! jolly good!
 ```
 
 ## Directory Structure
@@ -65,12 +98,12 @@ STM32F103C8T6-Linux main
 │   ├── 11-旋转编码器
 │   ├── 12-CH340 USB转串口
 │   ├── 13-MPU6050 陀螺仪加速度计
-│   └── 14-W25QXX Flash闪存
+│   ├── 14-W25QXX Flash闪存
+│   └── STM32入门教程.pptx
 ├── LICENSE
 ├── Library
 │   └── STM32F10x_StdPeriph_Lib_V3.5.0
 ├── README.md
-├── STM32入门教程.pptx
 ├── Sourcecode
 │   ├── 1-1-接线图
 │   ├── 1-2-keilkill批处理
@@ -107,9 +140,6 @@ STM32F103C8T6-Linux main
 │   ├── 11-2-硬件SPI读写W25Q64
 │   ├── 12-1-读写备份寄存器
 │   ├── 12-2-实时时钟
-│   ├── 11-2-硬件SPI读写W25Q64
-│   ├── 12-1-读写备份寄存器
-│   ├── 12-2-实时时钟
 │   ├── 13-1-修改主频
 │   ├── 13-2-睡眠模式+串口发送+接收
 │   ├── 13-3-停止模式+对射式红外传感器计次
@@ -120,7 +150,6 @@ STM32F103C8T6-Linux main
 │   └── 15-2读取芯片ID
 ├── flake.lock
 └── flake.nix
-
 63 directories, 5 files
 ```
 
