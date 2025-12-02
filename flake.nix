@@ -18,7 +18,7 @@
           stlink
           stlink-tool
           gcc-arm-embedded
-          picocom
+          tio
         ];
       };
     });

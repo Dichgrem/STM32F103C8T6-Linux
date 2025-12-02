@@ -15,7 +15,7 @@
 ```
 ## Ubuntu
 sudo apt update
-sudo apt install -y git python3 scons openocd stlink-tools gcc-arm-none-eabi gdb-multiarch
+sudo apt install -y git python3 scons openocd stlink-tools gcc-arm-none-eabi gdb-multiarch tio
 
 ## Nixos
 git clone https://github.com/Dichgrem/STM32F103C8T6-Linux.git
@@ -76,6 +76,14 @@ INFO flash_loader.c: Clear DFSR
   2/2   pages written
 INFO common_flash.c: Starting verification of write complete
 INFO common_flash.c: Flash written and verified! jolly good!
+```
+
+- Use tio to connect serial device
+
+```
+❯ tio /dev/ttyACM0
+tio 3.9
+Press ctrl-t q to quit
 ```
 
 ## Directory Structure
